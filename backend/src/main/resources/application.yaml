@@ -1,0 +1,33 @@
+quarkus:
+  http:
+    port: 7777
+    cors:
+      enabled: true
+      origins: http://localhost:5173, http://localhost:8080
+      methods: GET,POST,PUT,DELETE,OPTIONS
+      headers: accept,authorization,content-type,x-requested-with
+  datasource:
+    db-kind: mysql
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    jdbc:
+      url: ${DB_URL}
+
+  hibernate-orm:
+    database:
+      generation: update
+    log:
+      sql: true
+
+smallrye:
+  jwt:
+    sign:
+      key:
+        location: privateKey.pem
+
+mp:
+  jwt:
+    verify:
+      issuer: home-dashboard
+      publickey:
+        location: publicKey.pem

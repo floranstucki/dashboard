@@ -1,0 +1,18 @@
+:root {
+  --accent-color: #5b4df7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background: #06111f;
+  color: #f8fafc;
+}
+
+button {
+  font-family: inherit;
+}
