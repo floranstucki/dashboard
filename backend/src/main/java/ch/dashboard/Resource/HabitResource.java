@@ -46,6 +46,9 @@ public class HabitResource {
         habit.user = user;
         habit.doneToday = false;
         habit.streak = 0;
+        habit.bestStreak = 0;
+        habit.completedCount = 0;
+        habit.totalCheckCount = 0;
         habit.lastDoneDate = null;
         habit.persist();
 
@@ -70,9 +73,13 @@ public class HabitResource {
         if (habit.doneToday) {
             habit.lastDoneDate = today;
             habit.streak++;
+            habit.completedCount++;
+            habit.totalCheckCount++;
+            habit.bestStreak = Math.max(habit.bestStreak, habit.streak);
         } else {
             habit.lastDoneDate = null;
             habit.streak = Math.max(0, habit.streak - 1);
+            habit.completedCount = Math.max(0, habit.completedCount - 1);
         }
 
         return habit;

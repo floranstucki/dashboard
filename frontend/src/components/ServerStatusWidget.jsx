@@ -53,22 +53,50 @@ function ServerStatusWidget() {
             </div>
 
             {status.online && (
-                <div className="server-metrics">
-                    <div>
-                        <span>CPU</span>
-                        <strong>{status.cpu}%</strong>
+                <>
+                    <div className="server-metrics">
+                        <div>
+                            <span>CPU</span>
+                            <strong>{status.cpu}%</strong>
+                        </div>
+
+                        <div>
+                            <span>RAM</span>
+                            <strong>{status.ram}%</strong>
+                        </div>
+
+                        <div>
+                            <span>Disque</span>
+                            <strong>{status.disk}%</strong>
+                        </div>
                     </div>
 
-                    <div>
-                        <span>RAM</span>
-                        <strong>{status.ram}%</strong>
+                    <div className="server-extra">
+                        <div>
+                            <span>Uptime</span>
+                            <strong>{status.uptime || "N/A"}</strong>
+                        </div>
+
+                        <div>
+                            <span>Dernier backup</span>
+                            <strong>{status.lastBackup || "N/A"}</strong>
+                        </div>
                     </div>
 
-                    <div>
-                        <span>Disque</span>
-                        <strong>{status.disk}%</strong>
+                    <div className="server-services">
+                        <span className={status.services?.nginx ? "ok" : "ko"}>
+                            Nginx
+                        </span>
+
+                        <span className={status.services?.php ? "ok" : "ko"}>
+                            PHP-FPM
+                        </span>
+
+                        <span className={status.services?.mysql ? "ok" : "ko"}>
+                            MySQL
+                        </span>
                     </div>
-                </div>
+                </>
             )}
 
             <div className="server-status-detail">

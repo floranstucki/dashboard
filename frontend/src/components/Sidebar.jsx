@@ -13,6 +13,7 @@ import {
     User,
     FileText,
     Flame,
+    PlugZap,
 } from "lucide-react";
 
 function Sidebar() {
@@ -27,8 +28,10 @@ function Sidebar() {
         { label: "Serveurs", icon: Server, path: "/servers" },
         { label: "Objectifs", icon: Target, path: "/goals" },
         { label: "Habitudes", icon: Flame, path: "/habits" },
+        { label: "Journal", icon: BookOpen, path: "/journal" },
         { label: "Rapports", icon: FileText, path: "/reports" },
         { label: "Finances", icon: Wallet, path: "/finances" },
+        { label: "Intégrations", icon: PlugZap, path: "/integrations" },
         { label: "Paramètres", icon: Settings, path: "/settings" },
         { label: "Profil", icon: User, path: "/profile" },
     ];

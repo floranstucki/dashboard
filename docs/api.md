@@ -199,3 +199,27 @@ Retourne un rapport PDF mensuel contenant :
 * Statistiques
 * Graphiques
 * Répartition des dépenses
+
+
+## Integrations
+
+```http
+GET /weather
+GET /server-status
+
+GET /strava/connect-url
+GET /strava/callback
+GET /strava/status
+GET /strava/activities
+DELETE /strava/disconnect
+
+GET /github/connect-url
+GET /github/callback
+GET /github/status
+GET /github/repos
+GET /github/activity
+GET /github/events
+DELETE /github/disconnect
+
+GET /signal-fc/posts
+GET /signal-fc/manifestations

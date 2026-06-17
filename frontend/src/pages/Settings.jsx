@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AppLayout from "../components/AppLayout";
 import { Download, RotateCcw, Upload } from "lucide-react";
 import {
@@ -8,17 +8,20 @@ import {
     SETTINGS_KEY,
 } from "../utils/settings";
 import PageHeader from "../components/PageHeader";
-import { apiFetch } from "../utils/api";
 const DATA_KEYS = [
     "home-dashboard-settings",
     "smart-notifications",
 ];
 
 const DASHBOARD_WIDGETS = [
+    { key: "morningBriefing", label: "Briefing du matin" },
+    { key: "personalAssistant", label: "Assistant personnel" },
     { key: "mainGoal", label: "Objectif principal" },
     { key: "weather", label: "Météo trail" },
     { key: "serverStatus", label: "Serveur maison" },
     { key: "strava", label: "Strava" },
+    { key: "sportGoal", label: "Objectif sport" },
+    { key: "smartAlerts", label: "Alertes intelligentes" },
     { key: "habits", label: "Habitudes" },
     { key: "priority", label: "Priorités" },
     { key: "productivity", label: "Score productivité" },
@@ -27,6 +30,7 @@ const DASHBOARD_WIDGETS = [
     { key: "search", label: "Recherche globale" },
     { key: "quickActions", label: "Actions rapides" },
     { key: "focus", label: "Focus du jour" },
+    { key: "github", label: "GitHub" },
     { key: "inbox", label: "Inbox idées" },
     { key: "projects", label: "Projets" },
     { key: "planning", label: "Planning" },
@@ -35,53 +39,21 @@ const DASHBOARD_WIDGETS = [
     { key: "metrics", label: "Métriques" },
     { key: "advancedStats", label: "Stats avancées" },
     { key: "charts", label: "Graphiques" },
+    { key: "goalForecast", label: "Prévision objectifs" },
+    { key: "signalFc", label: "Signal FC" },
+    { key: "heatmap", label: "Heatmap activité" },
+    { key: "dailyScore", label: "Score du jour" },
+    { key: "dailyScoreHistory", label: "Historique du score" },
 ];
 function Settings() {
 
     const [settings, setSettings] = useState(getSettings());
-    const [stravaConnected, setStravaConnected] = useState(false);
     const updateSettings = (newSettings) => {
         setSettings(newSettings);
         saveSettings(newSettings);
         window.dispatchEvent(new Event("dashboard-settings-updated"));
     };
 
-    useEffect(() => {
-        const loadStravaStatus = async () => {
-            const response = await apiFetch("/strava/status");
-
-            if (!response.ok) return;
-
-            const data = await response.json();
-
-            setStravaConnected(data.connected);
-        };
-
-        loadStravaStatus();
-    }, []);
-    const connectStrava = async () => {
-        const response = await apiFetch("/strava/connect-url");
-
-        console.log(response.status);
-
-        const data = await response.json();
-
-        console.log(data);
-
-        window.location.href = data.url;
-    };
-
-    const disconnectStrava = async () => {
-        const response = await apiFetch("/strava/disconnect", {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw new Error("Impossible de déconnecter Strava.");
-        }
-        setStravaConnected(false);
-        alert("Strava déconnecté.");
-    };
 
     const handleExport = () => {
         const exportData = {
@@ -217,28 +189,6 @@ function Settings() {
             </section>
             <section className="dashboard-card settings-card">
                 <div className="card-header">
-                    <h2>🔌 Intégrations</h2>
-                </div>
-
-                <div className="integration-item">
-                    <div>
-                        <h3>🏃 Strava</h3>
-                        <p>{stravaConnected ? "Connecté" : "Non connecté"}</p>
-                    </div>
-
-                    {stravaConnected ? (
-                        <button className="danger" onClick={disconnectStrava}>
-                            Déconnecter
-                        </button>
-                    ) : (
-                        <button onClick={connectStrava}>
-                            Connecter
-                        </button>
-                    )}
-                </div>
-            </section>
-            <section className="dashboard-card settings-card">
-                <div className="card-header">
                     <h2>🧩 Widgets du dashboard</h2>
                 </div>
 
@@ -255,7 +205,25 @@ function Settings() {
                     ))}
                 </div>
             </section>
-
+            <section className="dashboard-card settings-card">
+                <div className="card-header">
+                    <h2>Thème</h2>
+                </div>
+                <select
+                    value={settings.theme || "violet"}
+                    onChange={(e) =>
+                        updateSettings({
+                            ...settings,
+                            theme: e.target.value,
+                        })
+                    }
+                >
+                    <option value="violet">Violet</option>
+                    <option value="blue">Blue</option>
+                    <option value="sport">Sport</option>
+                    <option value="minimal">Minimal</option>
+                </select>
+            </section>
             <section className="dashboard-card settings-card">
                 <div className="card-header">
                     <h2>💾 Données locales</h2>
@@ -283,7 +251,7 @@ function Settings() {
                     </button>
                 </div>
             </section>
-        </AppLayout>
+        </AppLayout >
     );
 }
 

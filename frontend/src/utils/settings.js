@@ -3,13 +3,18 @@ export const SETTINGS_KEY = "home-dashboard-settings";
 export const DEFAULT_SETTINGS = {
     displayName: "Flo",
     accentColor: "#5b4df7",
+    theme: "violet",
     compactMode: false,
 
     dashboardWidgets: {
+        morningBriefing: true,
+        personalAssistant: true,
         mainGoal: true,
         weather: true,
         serverStatus: true,
         strava: true,
+        sportGoal: true,
+        smartAlerts: true,
         habits: true,
         priority: true,
         productivity: true,
@@ -17,6 +22,7 @@ export const DEFAULT_SETTINGS = {
         assistant: true,
         search: true,
         quickActions: true,
+        github: true,
         focus: true,
         inbox: true,
         projects: true,
@@ -26,6 +32,11 @@ export const DEFAULT_SETTINGS = {
         metrics: true,
         advancedStats: true,
         charts: true,
+        goalForecast: true,
+        signalFc: true,
+        heatmap: true,
+        dailyScore: true,
+        dailyScoreHistory: true,
     },
 };
 
@@ -58,6 +69,15 @@ export function applySettings(settings) {
         "--accent-color",
         settings.accentColor
     );
+
+    document.body.classList.remove(
+        "theme-violet",
+        "theme-blue",
+        "theme-sport",
+        "theme-minimal"
+    );
+
+    document.body.classList.add(`theme-${settings.theme || "violet"}`);
 
     document.body.classList.toggle("compact-mode", settings.compactMode);
 }

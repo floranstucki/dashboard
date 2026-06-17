@@ -18,6 +18,8 @@ import Reports from "./pages/Reports";
 import SmartNotifications from "./components/SmartNotifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Habits from "./pages/Habits";
+import Integrations from "./pages/Integrations";
+import DailyJournal from "./pages/DailyJournal";
 function App() {
   const location = useLocation();
   const isPublicPage = location.pathname === "/login" || location.pathname === "/signup";
@@ -126,12 +128,29 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/integrations"
+          element={
+            <ProtectedRoute>
+              <Integrations />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/week-view"
           element={
             <ProtectedRoute>
               <WeekView />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/journal"
+          element={
+            <ProtectedRoute>
+              <DailyJournal />
             </ProtectedRoute>
           }
         />

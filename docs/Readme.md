@@ -171,6 +171,16 @@ Les secrets d'intégration sont définis dans le fichier `.env`.
 
 ---
 
+## Intégrations avancées
+
+- Strava OAuth : activités sportives, distance hebdomadaire, dénivelé et dernière sortie.
+- GitHub OAuth : repos publics/privés, issues, pull requests et activité récente.
+- Open-Meteo : météo trail/randonnée.
+- Serveur personnel : statut, CPU, RAM, disque, uptime et services.
+- Signal FC : actualités et manifestations WordPress.
+
+---
+
 ## Variables d'environnement
 
 ```env

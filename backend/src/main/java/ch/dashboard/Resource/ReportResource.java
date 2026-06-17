@@ -45,7 +45,13 @@ public class ReportResource {
                         List<Task> tasks = Task.list("user.id", userId);
                         List<Goal> goals = Goal.list("user.id", userId);
                         List<FinanceItem> finances = FinanceItem.list("user.id", userId);
-
+                        List<Habit> habits = Habit.list("user.id", userId);
+                        List<DailyScore> scores = DailyScore.list(
+                                        "user.id = ?1 order by date desc",
+                                        userId);
+                        List<DailyJournalEntry> journalEntries = DailyJournalEntry.list(
+                                        "user.id = ?1 order by date desc",
+                                        userId);
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
                         Document document = new Document(PageSize.A4, 42, 42, 42, 42);
@@ -71,6 +77,9 @@ public class ReportResource {
                         addProjectsTable(document, projects, sectionFont, normalFont, whiteFont);
                         addTasksTable(document, tasks, sectionFont, normalFont, whiteFont);
                         addGoalsTable(document, goals, sectionFont, normalFont, whiteFont);
+                        addHabitsTable(document, habits, sectionFont, normalFont, whiteFont);
+                        addDailyScoreSection(document, scores, sectionFont, normalFont, whiteFont);
+                        addJournalSection(document, journalEntries, sectionFont, normalFont);
                         addFinancesTable(document, finances, sectionFont, normalFont, whiteFont);
 
                         document.close();
@@ -434,5 +443,99 @@ public class ReportResource {
                 ImageIO.write(image, "png", imageOutput);
 
                 return Image.getInstance(imageOutput.toByteArray());
+        }
+
+        private void addHabitsTable(
+                        Document document,
+                        List<Habit> habits,
+                        Font sectionFont,
+                        Font normalFont,
+                        Font whiteFont) throws DocumentException {
+
+                document.add(section("Habitudes", sectionFont));
+
+                PdfPTable table = new PdfPTable(4);
+                table.setWidthPercentage(100);
+                table.setSpacingAfter(18);
+                table.setWidths(new float[] { 3, 2, 1, 1 });
+
+                addHeaderCell(table, "Habitude", whiteFont);
+                addHeaderCell(table, "Fréquence", whiteFont);
+                addHeaderCell(table, "Streak", whiteFont);
+                addHeaderCell(table, "Record", whiteFont);
+
+                if (habits.isEmpty()) {
+                        addCell(table, "Aucune habitude", normalFont);
+                        addCell(table, "-", normalFont);
+                        addCell(table, "-", normalFont);
+                        addCell(table, "-", normalFont);
+                } else {
+                        for (Habit habit : habits) {
+                                addCell(table, habit.title, normalFont);
+                                addCell(table, habit.frequency, normalFont);
+                                addCell(table, habit.streak + "j", normalFont);
+                                addCell(table, habit.bestStreak + "j", normalFont);
+                        }
+                }
+
+                document.add(table);
+        }
+
+        private void addDailyScoreSection(
+                        Document document,
+                        List<DailyScore> scores,
+                        Font sectionFont,
+                        Font normalFont,
+                        Font whiteFont) throws DocumentException {
+
+                document.add(section("Score du jour", sectionFont));
+
+                PdfPTable table = new PdfPTable(2);
+                table.setWidthPercentage(100);
+                table.setSpacingAfter(18);
+
+                addHeaderCell(table, "Date", whiteFont);
+                addHeaderCell(table, "Score", whiteFont);
+
+                if (scores.isEmpty()) {
+                        addCell(table, "Aucun score", normalFont);
+                        addCell(table, "-", normalFont);
+                } else {
+                        for (DailyScore score : scores.stream().limit(7).toList()) {
+                                addCell(table, score.date, normalFont);
+                                addCell(table, score.score + "/100", normalFont);
+                        }
+                }
+
+                document.add(table);
+        }
+
+        private void addJournalSection(
+                        Document document,
+                        List<DailyJournalEntry> journalEntries,
+                        Font sectionFont,
+                        Font normalFont) throws DocumentException {
+
+                document.add(section("Journal de bord", sectionFont));
+
+                if (journalEntries.isEmpty()) {
+                        document.add(new Paragraph("Aucune entrée de journal.", normalFont));
+                        document.add(space(18));
+                        return;
+                }
+
+                for (DailyJournalEntry entry : journalEntries.stream().limit(5).toList()) {
+                        Paragraph date = new Paragraph(entry.date, normalFont);
+                        date.setSpacingAfter(4);
+                        document.add(date);
+
+                        Paragraph summary = new Paragraph(
+                                        entry.summary != null ? entry.summary : "-",
+                                        normalFont);
+                        summary.setSpacingAfter(10);
+                        document.add(summary);
+                }
+
+                document.add(space(8));
         }
 }

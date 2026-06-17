@@ -14,6 +14,9 @@ public class Habit extends PanacheEntity {
     public String frequency;
     public boolean doneToday = false;
     public int streak = 0;
+    public int bestStreak = 0;
+    public int completedCount = 0;
+    public int totalCheckCount = 0;
     public String lastDoneDate;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

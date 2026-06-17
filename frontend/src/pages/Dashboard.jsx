@@ -22,6 +22,16 @@ import HabitsCard from "../components/HabitsCard";
 import WeatherWidget from "../components/WeatherWidget";
 import ServerStatusWidget from "../components/ServerStatusWidget";
 import StravaWidget from "../components/StravaWidget";
+import SportGoalWidget from "../components/SportGoalWidget";
+import SmartAlertsCard from "../components/SmartAlertsCard";
+import PersonalAssistantCard from "../components/PersonalAssistantCard";
+import MorningBriefingCard from "../components/MorningBriefingCard";
+import GitHubWidget from "../components/GitHubWidget";
+import GoalForecastCard from "../components/GoalForecastCard";
+import SignalFcWidget from "../components/SignalFcWidget";
+import ActivityHeatmap from "../components/ActivityHeatmap";
+import DailyScoreCard from "../components/DailyScoreCard";
+import DailyScoreHistory from "../components/DailyScoreHistory";
 function Dashboard() {
     const [settings, setSettings] = useState(getSettings());
     const widgets = settings.dashboardWidgets || {};
@@ -76,14 +86,28 @@ function Dashboard() {
                     </div>
                 </div>
             </PageHeader>
+            {(widgets.morningBriefing ||
+                widgets.personalAssistant ||
+                widgets.quickActions) && (
+                    <div className="dashboard-grid dashboard-grid-bottom">
+                        {widgets.morningBriefing && <MorningBriefingCard />}
+                        {widgets.personalAssistant && <PersonalAssistantCard />}
+                        {widgets.quickActions && <QuickActions />}
+                    </div>
+                )}
 
-            {widgets.quickActions && <QuickActions />}
-
-            {widgets.mainGoal && (
-                <div className="dashboard-grid ">
-                    <MainGoalCard />
+            {(widgets.mainGoal || widgets.sportGoal) && (
+                <div className="dashboard-grid dashboard-grid-bottom">
+                    {widgets.mainGoal && <MainGoalCard />}
+                    {widgets.sportGoal && <SportGoalWidget />}
                 </div>
             )}
+
+            {(widgets.notifications || widgets.habits) && (
+                <div className="dashboard-grid dashboard-grid-bottom">
+                    {widgets.habits && <HabitsCard />}
+                    {widgets.notifications && <NotificationsCard />}
+                </div>)}
 
             {(widgets.weather || widgets.serverStatus || widgets.strava) && (
                 <div className="dashboard-grid dashboard-grid-bottom">
@@ -93,9 +117,16 @@ function Dashboard() {
                 </div>
             )}
 
-            {widgets.habits && (
+            {widgets.smartAlerts && (
                 <div className="dashboard-grid">
-                    <HabitsCard />
+                    <SmartAlertsCard />
+                </div>
+            )}
+
+            {(widgets.dailyScore || widgets.dailyScoreHistory) && (
+                <div className="dashboard-grid dashboard-grid-bottom">
+                    {widgets.dailyScore && <DailyScoreCard />}
+                    {widgets.dailyScoreHistory && <DailyScoreHistory />}
                 </div>
             )}
             {(widgets.priority ||
@@ -104,18 +135,25 @@ function Dashboard() {
                     <div className="dashboard-grid intelligence-grid">
                         {widgets.priority && <PriorityCard />}
                         {widgets.productivity && <ProductivityScore />}
-                        {widgets.notifications && <NotificationsCard />}
+
                     </div>
                 )}
 
             {widgets.assistant && <AssistantCard />}
 
-            {widgets.search && <GlobalSearch />}
+            {(widgets.github || widgets.signalFc || widgets.activityHeatmap) && (
+                <div className="dashboard-grid intelligence-grid">
+                    {widgets.github && <GitHubWidget />}
+                    {widgets.signalFc && <SignalFcWidget />}
+                    {widgets.activityHeatmap && <ActivityHeatmap />}
+                </div>
+            )}
 
-            {(widgets.focus || widgets.inbox) && (
+            {(widgets.focus || widgets.inbox || widgets.goalForecast) && (
                 <div className="dashboard-grid dashboard-grid-top">
                     {widgets.focus && <FocusCard />}
                     {widgets.inbox && <InboxCard />}
+                    {widgets.goalForecast && <GoalForecastCard />}
                 </div>
             )}
 
