@@ -37,7 +37,7 @@ function DailyJournal() {
 
             if (journalRes.ok) {
                 const data = await journalRes.json();
-                setHistory(data.slice(0, 7));
+                setHistory(Array.isArray(data) ? data.slice(0, 7) : []);
             }
 
         };

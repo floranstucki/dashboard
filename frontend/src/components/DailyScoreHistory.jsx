@@ -4,6 +4,7 @@ import { apiFetch } from "../utils/api";
 function DailyScoreHistory() {
     const [scores, setScores] = useState([]);
 
+    const safeScores = Array.isArray(scores) ? scores : [];
     useEffect(() => {
         const loadScores = async () => {
             const response = await apiFetch("/daily-scores");
@@ -12,7 +13,7 @@ function DailyScoreHistory() {
 
             const data = await response.json();
 
-            setScores(data.slice(0, 7).reverse());
+            setScores(Array.isArray(data) ? data.slice(0, 7).reverse() : []);
         };
 
         loadScores();
@@ -25,7 +26,7 @@ function DailyScoreHistory() {
             </div>
 
             <div className="score-history-bars">
-                {scores.map((item) => (
+                {safeScores.map((item) => (
                     <div className="score-history-item" key={item.id}>
                         <div className="score-history-bar">
                             <div style={{ height: `${item.score}%` }} />

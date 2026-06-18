@@ -8,25 +8,30 @@ function ProductivityScore() {
     const { projects } = useProjects();
     const { goals } = useGoals();
 
-    const taskScore = tasks.length
+
+    const safeTasks = Array.isArray(tasks) ? tasks : []
+    const safeProjects = Array.isArray(projects) ? projects : []
+    const safeGoals = Array.isArray(goals) ? goals : []
+
+    const taskScore = safeTasks.length
         ? Math.round(
-            (tasks.filter((task) => task.status === "Terminé").length /
-                tasks.length) *
+            (safeTasks.filter((task) => task.status === "Terminé").length /
+                safeTasks.length) *
             100
         )
         : 0;
 
-    const projectScore = projects.length
+    const projectScore = safeProjects.length
         ? Math.round(
-            projects.reduce((sum, project) => sum + Number(project.progress), 0) /
-            projects.length
+            safeProjects.reduce((sum, project) => sum + Number(project.progress), 0) /
+            safeProjects.length
         )
         : 0;
 
-    const goalScore = goals.length
+    const goalScore = safeGoals.length
         ? Math.round(
-            goals.reduce((sum, goal) => sum + Number(goal.progress), 0) /
-            goals.length
+            safeGoals.reduce((sum, goal) => sum + Number(goal.progress), 0) /
+            safeGoals.length
         )
         : 0;
 

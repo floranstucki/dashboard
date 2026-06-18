@@ -20,6 +20,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Habits from "./pages/Habits";
 import Integrations from "./pages/Integrations";
 import DailyJournal from "./pages/DailyJournal";
+import Assistant from "./pages/Assistant";
 function App() {
   const location = useLocation();
   const isPublicPage = location.pathname === "/login" || location.pathname === "/signup";
@@ -133,6 +134,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Integrations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/assistant"
+          element={
+            <ProtectedRoute>
+              <Assistant />
             </ProtectedRoute>
           }
         />

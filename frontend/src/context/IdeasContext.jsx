@@ -21,8 +21,7 @@ export function IdeasProvider({ children }) {
             }
 
             const data = await response.json();
-
-            setIdeas(data);
+            setIdeas(Array.isArray(data) ? data : []);
         } catch (error) {
             setIdeasError(error.message);
         } finally {

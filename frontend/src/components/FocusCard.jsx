@@ -4,7 +4,8 @@ import { useTasks } from "../context/TasksContext";
 function FocusCard() {
     const { tasks, changeTaskStatus } = useTasks();
 
-    const focusTasks = tasks
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const focusTasks = safeTasks
         .filter((task) => task.status !== "Terminé")
         .sort((a, b) => {
             const priorityOrder = {

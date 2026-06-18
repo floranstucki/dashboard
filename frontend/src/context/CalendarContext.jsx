@@ -22,7 +22,7 @@ export function CalendarProvider({ children }) {
             }
 
             const data = await response.json();
-            setEvents(data);
+            setEvents(Array.isArray(data) ? data : []);
         } catch (error) {
             setEventsError(error.message);
         } finally {

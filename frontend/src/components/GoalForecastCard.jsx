@@ -2,9 +2,9 @@ import { CalendarClock, TrendingUp } from "lucide-react";
 import { useGoals } from "../context/GoalsContext";
 
 function GoalForecastCard() {
-    const { goals = [] } = useGoals();
-
-    const activeGoals = goals.filter((goal) => Number(goal.progress) < 100);
+    const { goals } = useGoals();
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const activeGoals = safeGoals.filter((goal) => Number(goal.progress) < 100);
 
     const getForecast = (goal) => {
         if (!goal.deadline || goal.deadline === "Non définie") {

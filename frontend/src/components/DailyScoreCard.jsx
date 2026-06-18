@@ -7,13 +7,20 @@ import { useCalendar } from "../context/CalendarContext";
 import { apiFetch } from "../utils/api";
 
 function DailyScoreCard() {
-    const { tasks = [] } = useTasks();
-    const { habits = [] } = useHabits();
-    const { goals = [] } = useGoals();
-    const { sortedEvents = [] } = useCalendar();
-
+    const { tasks } = useTasks();
+    const { habits } = useHabits();
+    const { goals } = useGoals();
+    const { sortedEvents } = useCalendar();
     const [activities, setActivities] = useState([]);
     const [serverStatus, setServerStatus] = useState(null);
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeHabits = Array.isArray(habits) ? habits : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+    const safeActivities = Array.isArray(activities) ? activities : [];
+    const safeServerStatus = Array.isArray(serverStatus) ? serverStatus : [];
+
+
 
     useEffect(() => {
         const loadData = async () => {
@@ -37,25 +44,25 @@ function DailyScoreCard() {
     const scoreData = useMemo(() => {
         const today = new Date().toISOString().split("T")[0];
 
-        const doneTasks = tasks.filter((task) => task.status === "Terminé").length;
+        const doneTasks = safeTasks.filter((task) => task.status === "Terminé").length;
         const taskScore = Math.min(30, doneTasks * 10);
 
-        const doneHabits = habits.filter((habit) => habit.doneToday).length;
-        const habitScore = habits.length
-            ? Math.round((doneHabits / habits.length) * 20)
+        const doneHabits = safeHabits.filter((habit) => habit.doneToday).length;
+        const habitScore = safeHabits.length
+            ? Math.round((doneHabits / safeHabits.length) * 20)
             : 0;
 
-        const sportToday = activities.some((activity) =>
+        const sportToday = safeActivities.some((activity) =>
             activity.start_date?.startsWith(today)
         );
         const sportScore = sportToday ? 20 : 0;
 
-        const eventsToday = sortedEvents.filter((event) => event.date === today);
+        const eventsToday = safeEvents.filter((event) => event.date === today);
         const calendarScore = eventsToday.length > 0 ? 10 : 5;
 
-        const serverScore = serverStatus?.online ? 10 : 0;
+        const serverScore = safeServerStatus?.online ? 10 : 0;
 
-        const goalScore = goals.some(
+        const goalScore = safeGoals.some(
             (goal) => Number(goal.progress) >= 80 && Number(goal.progress) < 100
         )
             ? 10
@@ -80,7 +87,7 @@ function DailyScoreCard() {
                 { label: "Objectifs", value: goalScore, max: 10 },
             ],
         };
-    }, [tasks, habits, goals, sortedEvents, activities, serverStatus]);
+    }, [safeTasks, safeHabits, safeGoals, safeEvents, safeActivities, safeServerStatus]);
 
 
     useEffect(() => {

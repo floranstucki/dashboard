@@ -23,7 +23,7 @@ export function HabitsProvider({ children }) {
             }
 
             const data = await response.json();
-            setHabits(data);
+            setHabits(Array.isArray(data) ? data : []);
         } catch (error) {
             setHabitsError(error.message);
         } finally {

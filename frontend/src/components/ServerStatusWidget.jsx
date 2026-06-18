@@ -5,6 +5,7 @@ import { apiFetch } from "../utils/api";
 function ServerStatusWidget() {
     const [status, setStatus] = useState(null);
 
+    const safeStatus = Array.isArray(status) ? status : [];
     useEffect(() => {
         const loadStatus = async () => {
             try {
@@ -15,7 +16,7 @@ function ServerStatusWidget() {
                 }
 
                 const data = await response.json();
-                setStatus(data);
+                setStatus(Array.isArray(data) ? data : []);
             } catch {
                 setStatus({
                     name: "Serveur Debian",
@@ -27,7 +28,7 @@ function ServerStatusWidget() {
         loadStatus();
     }, []);
 
-    if (!status) {
+    if (!safeStatus) {
         return (
             <section className="dashboard-card server-status-card">
                 <p>Chargement serveur...</p>
@@ -42,57 +43,57 @@ function ServerStatusWidget() {
             </div>
 
             <div className="server-status-main">
-                <div className={status.online ? "server-online" : "server-offline"}>
-                    {status.online ? <Server size={30} /> : <WifiOff size={30} />}
+                <div className={safeStatus.online ? "server-online" : "server-offline"}>
+                    {safeStatus.online ? <Server size={30} /> : <WifiOff size={30} />}
                 </div>
 
                 <div>
-                    <h3>{status.name}</h3>
-                    <p>{status.online ? "🟢 En ligne" : "🔴 Hors ligne"}</p>
+                    <h3>{safeStatus.name}</h3>
+                    <p>{safeStatus.online ? "🟢 En ligne" : "🔴 Hors ligne"}</p>
                 </div>
             </div>
 
-            {status.online && (
+            {safeStatus.online && (
                 <>
                     <div className="server-metrics">
                         <div>
                             <span>CPU</span>
-                            <strong>{status.cpu}%</strong>
+                            <strong>{safeStatus.cpu}%</strong>
                         </div>
 
                         <div>
                             <span>RAM</span>
-                            <strong>{status.ram}%</strong>
+                            <strong>{safeStatus.ram}%</strong>
                         </div>
 
                         <div>
                             <span>Disque</span>
-                            <strong>{status.disk}%</strong>
+                            <strong>{safeStatus.disk}%</strong>
                         </div>
                     </div>
 
                     <div className="server-extra">
                         <div>
                             <span>Uptime</span>
-                            <strong>{status.uptime || "N/A"}</strong>
+                            <strong>{safeStatus.uptime || "N/A"}</strong>
                         </div>
 
                         <div>
                             <span>Dernier backup</span>
-                            <strong>{status.lastBackup || "N/A"}</strong>
+                            <strong>{safeStatus.lastBackup || "N/A"}</strong>
                         </div>
                     </div>
 
                     <div className="server-services">
-                        <span className={status.services?.nginx ? "ok" : "ko"}>
+                        <span className={safeStatus.services?.nginx ? "ok" : "ko"}>
                             Nginx
                         </span>
 
-                        <span className={status.services?.php ? "ok" : "ko"}>
+                        <span className={safeStatus.services?.php ? "ok" : "ko"}>
                             PHP-FPM
                         </span>
 
-                        <span className={status.services?.mysql ? "ok" : "ko"}>
+                        <span className={safeStatus.services?.mysql ? "ok" : "ko"}>
                             MySQL
                         </span>
                     </div>
@@ -100,7 +101,7 @@ function ServerStatusWidget() {
             )}
 
             <div className="server-status-detail">
-                Dernière vérification : {status.checkedAt || "Non disponible"}
+                Dernière vérification : {safeStatus.checkedAt || "Non disponible"}
             </div>
         </section>
     );

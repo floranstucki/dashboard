@@ -5,12 +5,18 @@ import { useCalendar } from "../context/CalendarContext";
 import { apiFetch } from "../utils/api";
 
 function MorningBriefingCard() {
-    const { tasks = [] } = useTasks();
-    const { sortedEvents = [] } = useCalendar();
+    const { tasks } = useTasks();
+    const { sortedEvents } = useCalendar();
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
 
     const [weather, setWeather] = useState(null);
     const [serverStatus, setServerStatus] = useState(null);
     const [activities, setActivities] = useState([]);
+
+    const safeWeather = Array.isArray(weather) ? weather : [];
+    const safeServerStatus = Array.isArray(serverStatus) ? serverStatus : [];
+    const safeActivities = Array.isArray(activities) ? activities : [];
 
     useEffect(() => {
         const loadData = async () => {
@@ -55,7 +61,7 @@ function MorningBriefingCard() {
 
         const today = new Date().toISOString().split("T")[0];
 
-        const urgentTasks = tasks.filter(
+        const urgentTasks = safeTasks.filter(
             (task) =>
                 task.status !== "Terminé" &&
                 (task.priority === "Haute" ||
@@ -68,7 +74,7 @@ function MorningBriefingCard() {
             );
         }
 
-        const todayEvents = sortedEvents.filter(
+        const todayEvents = safeEvents.filter(
             (event) => event.date === today
         );
 
@@ -78,9 +84,9 @@ function MorningBriefingCard() {
             );
         }
 
-        if (weather?.current) {
+        if (safeWeather?.current) {
             const rain =
-                weather.current.precipitation ?? 0;
+                safeWeather.current.precipitation ?? 0;
 
             if (rain < 1) {
                 items.push(
@@ -93,16 +99,16 @@ function MorningBriefingCard() {
             }
         }
 
-        if (serverStatus) {
+        if (safeServerStatus?.online) {
             items.push(
-                serverStatus.online
+                safeServerStatus.online
                     ? "🖥️ Serveur opérationnel"
                     : "🚨 Serveur hors ligne"
             );
         }
 
-        if (activities.length > 0) {
-            const last = activities[0];
+        if (safeActivities.length > 0) {
+            const last = safeActivities[0];
 
             const daysSince = Math.floor(
                 (new Date() -
@@ -129,11 +135,11 @@ function MorningBriefingCard() {
 
         return items;
     }, [
-        tasks,
-        sortedEvents,
-        weather,
-        serverStatus,
-        activities,
+        safeTasks,
+        safeEvents,
+        safeWeather,
+        safeServerStatus,
+        safeActivities,
     ]);
 
     const currentHour = new Date().getHours();

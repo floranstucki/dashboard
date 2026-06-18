@@ -7,7 +7,6 @@ import PlanningCard from "../components/PlanningCard";
 import AttentionCard from "../components/AttentionCard";
 import MetricsCard from "../components/MetricsCard";
 import DashboardCharts from "../components/DashboardCharts";
-import GlobalSearch from "../components/GlobalSearch";
 import UpcomingEventsCard from "../components/UpcomingEventsCard";
 import QuickActions from "../components/QuickActions";
 import PageHeader from "../components/PageHeader";
@@ -32,6 +31,7 @@ import SignalFcWidget from "../components/SignalFcWidget";
 import ActivityHeatmap from "../components/ActivityHeatmap";
 import DailyScoreCard from "../components/DailyScoreCard";
 import DailyScoreHistory from "../components/DailyScoreHistory";
+import AssistantDashboardWidget from "../components/AssistantDashboardWidget";
 function Dashboard() {
     const [settings, setSettings] = useState(getSettings());
     const widgets = settings.dashboardWidgets || {};
@@ -96,10 +96,11 @@ function Dashboard() {
                     </div>
                 )}
 
-            {(widgets.mainGoal || widgets.sportGoal) && (
+            {(widgets.mainGoal || widgets.sportGoal || widgets.assistant) && (
                 <div className="dashboard-grid dashboard-grid-bottom">
                     {widgets.mainGoal && <MainGoalCard />}
                     {widgets.sportGoal && <SportGoalWidget />}
+                    {widgets.assistant && <AssistantDashboardWidget />}
                 </div>
             )}
 
@@ -141,11 +142,11 @@ function Dashboard() {
 
             {widgets.assistant && <AssistantCard />}
 
-            {(widgets.github || widgets.signalFc || widgets.activityHeatmap) && (
+            {(widgets.github || widgets.signalFc || widgets.heatmap) && (
                 <div className="dashboard-grid intelligence-grid">
                     {widgets.github && <GitHubWidget />}
                     {widgets.signalFc && <SignalFcWidget />}
-                    {widgets.activityHeatmap && <ActivityHeatmap />}
+                    {widgets.heatmap && <ActivityHeatmap />}
                 </div>
             )}
 

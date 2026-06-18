@@ -3,8 +3,8 @@ import { useIdeas } from "../context/IdeasContext";
 
 function InboxCard() {
     const { ideas, updateIdeaStatus } = useIdeas();
-
-    const latestIdeas = ideas.slice(0, 4);
+    const safeIdeas = Array.isArray(ideas) ? ideas : [];
+    const latestIdeas = safeIdeas.slice(0, 4);
 
     return (
         <section className="dashboard-card inbox-card">

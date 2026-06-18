@@ -24,7 +24,7 @@ export function TasksProvider({ children }) {
             }
 
             const data = await response.json();
-            setTasks(data);
+            setTasks(Array.isArray(data) ? data : []);
         } catch (error) {
             setTasksError(error.message);
         } finally {

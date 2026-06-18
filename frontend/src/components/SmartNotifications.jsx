@@ -8,10 +8,16 @@ import { useFinances } from "../context/FinancesContext";
 function SmartNotifications() {
     const { addNotification } = useNotifications();
 
-    const { tasks = [] } = useTasks();
-    const { goals = [] } = useGoals();
-    const { sortedEvents = [] } = useCalendar();
-    const { items = [] } = useFinances();
+    const { tasks } = useTasks();
+    const { goals } = useGoals();
+    const { sortedEvents } = useCalendar();
+    const { items } = useFinances();
+
+
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeSortedEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+    const safeItems = Array.isArray(items) ? items : [];
 
     useEffect(() => {
         const shown = JSON.parse(
@@ -32,7 +38,7 @@ function SmartNotifications() {
             );
         };
 
-        tasks.forEach((task) => {
+        safeTasks.forEach((task) => {
             if (task.priority === "Haute" && task.status !== "Terminé") {
                 push(
                     `task-${task.id}`,
@@ -42,7 +48,7 @@ function SmartNotifications() {
             }
         });
 
-        goals.forEach((goal) => {
+        safeGoals.forEach((goal) => {
             if (Number(goal.progress) >= 80 && Number(goal.progress) < 100) {
                 push(
                     `goal-${goal.id}`,
@@ -54,7 +60,7 @@ function SmartNotifications() {
 
         const today = new Date().toISOString().split("T")[0];
 
-        sortedEvents.forEach((event) => {
+        safeSortedEvents.forEach((event) => {
             if (event.date === today) {
                 push(
                     `event-${event.id}`,
@@ -81,7 +87,7 @@ function SmartNotifications() {
                 "Votre solde est actuellement négatif."
             );
         }
-    }, [tasks, goals, sortedEvents, items, addNotification]);
+    }, [safeTasks, safeGoals, safeSortedEvents, safeItems, addNotification]);
 
     return null;
 }

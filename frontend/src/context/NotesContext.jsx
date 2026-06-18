@@ -21,7 +21,7 @@ export function NotesProvider({ children }) {
             }
 
             const data = await response.json();
-            setNotes(data);
+            setNotes(Array.isArray(data) ? data : []);
         } catch (error) {
             setNotesError(error.message);
         } finally {

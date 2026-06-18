@@ -3,8 +3,8 @@ import { useGoals } from "../context/GoalsContext";
 
 function MainGoalCard() {
     const { goals } = useGoals();
-
-    const activeGoals = goals
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const activeGoals = safeGoals
         .filter((goal) => Number(goal.progress) < 100)
         .sort((a, b) => {
             if (!a.deadline || a.deadline === "Non définie") return 1;

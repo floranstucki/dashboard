@@ -23,8 +23,8 @@ function Login() {
 
             window.location.href = "/dashboard";
         } catch (error) {
-            console.error("Erreur lors du chargement des tâches :", error);
-            setTasksError(error.message);
+            console.error("Erreur lors de la connexion :", error);
+            setError(error.message || "Impossible de se connecter.");
         }
     };
     return (

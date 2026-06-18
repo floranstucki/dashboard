@@ -8,6 +8,13 @@ function GitHubWidget() {
     const [issues, setIssues] = useState([]);
     const [pullRequests, setPullRequests] = useState([]);
     const [events, setEvents] = useState([]);
+    const safeJsonParse = (value, fallback) => {
+        try {
+            return typeof value === "string" ? JSON.parse(value) : fallback;
+        } catch {
+            return fallback;
+        }
+    };
     useEffect(() => {
         const loadRepos = async () => {
             const response = await apiFetch("/github/repos");
@@ -20,21 +27,24 @@ function GitHubWidget() {
             if (!response.ok) return;
 
             const data = await response.json();
-            setRepos(data);
+            setRepos(Array.isArray(data) ? data : []);
             const activityResponse = await apiFetch("/github/activity");
 
             if (activityResponse.ok) {
                 const activity = await activityResponse.json();
 
-                setIssues(JSON.parse(activity.issues));
-                setPullRequests(JSON.parse(activity.pullRequests).items || []);
+                const parsedIssues = safeJsonParse(activity.issues, []);
+                const parsedPrs = safeJsonParse(activity.pullRequests, { items: [] });
+
+                setIssues(Array.isArray(parsedIssues) ? parsedIssues : []);
+                setPullRequests(Array.isArray(parsedPrs.items) ? parsedPrs.items : []);
             }
 
             const eventsResponse = await apiFetch("/github/events");
 
             if (eventsResponse.ok) {
                 const data = await eventsResponse.json();
-                setEvents(data);
+                setEvents(Array.isArray(data) ? data : []);
             }
         };
         loadRepos();

@@ -8,18 +8,22 @@ function AttentionCard() {
     const { sortedEvents } = useCalendar();
     const { projects } = useProjects();
 
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+    const safeProjects = Array.isArray(projects) ? projects : [];
+
     const today = new Date().toISOString().split("T")[0];
 
-    const urgentTasks = tasks
+    const urgentTasks = safeTasks
         .filter((task) => task.status !== "Terminé")
         .filter((task) => task.priority === "Urgente" || task.priority === "Haute")
         .slice(0, 2);
 
-    const todayEvents = sortedEvents
+    const todayEvents = safeEvents
         .filter((event) => event.date === today)
         .slice(0, 2);
 
-    const lowProjects = projects
+    const lowProjects = safeProjects
         .filter((project) => Number(project.progress) < 50)
         .slice(0, 2);
 

@@ -19,20 +19,23 @@ function DashboardCharts() {
     const { goals } = useGoals();
     const { totals } = useFinances();
 
-    const projectData = projects.map((project) => ({
+    const safeProjects = Array.isArray(projects) ? projects : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const projectData = safeProjects.map((project) => ({
         name: project.name,
         progression: Number(project.progress),
     }));
 
-    const goalsData = goals.map((goal) => ({
+    const goalsData = safeGoals.map((goal) => ({
         name: goal.title,
         progression: Number(goal.progress),
     }));
 
+    const safeTotals = Array.isArray(totals) ? totals : [];
     const financeData = [
-        { name: "Revenus", value: totals.revenus },
-        { name: "Dépenses", value: totals.depenses + totals.abonnements },
-        { name: "Épargne", value: totals.epargne },
+        { name: "Revenus", value: safeTotals.revenus },
+        { name: "Dépenses", value: safeTotals.depenses + safeTotals.abonnements },
+        { name: "Épargne", value: safeTotals.epargne },
     ].filter((item) => item.value > 0);
 
     return (

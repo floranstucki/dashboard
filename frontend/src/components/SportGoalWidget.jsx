@@ -7,6 +7,7 @@ const WEEKLY_GOAL_KM = 30;
 function SportGoalWidget() {
     const [activities, setActivities] = useState([]);
 
+    const safeActivities = Array.isArray(activities) ? activities : [];
     useEffect(() => {
         const loadActivities = async () => {
             const response = await apiFetch("/strava/activities");
@@ -14,7 +15,7 @@ function SportGoalWidget() {
             if (!response.ok) return;
 
             const data = await response.json();
-            setActivities(data);
+            setActivities(Array.isArray(data) ? data : []);
         };
 
         loadActivities();
@@ -25,12 +26,12 @@ function SportGoalWidget() {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(now.getDate() - 7);
 
-        const meters = activities
+        const meters = safeActivities
             .filter((activity) => new Date(activity.start_date) >= sevenDaysAgo)
             .reduce((sum, activity) => sum + activity.distance, 0);
 
         return meters / 1000;
-    }, [activities]);
+    }, [safeActivities]);
 
     const progress = Math.min(
         100,

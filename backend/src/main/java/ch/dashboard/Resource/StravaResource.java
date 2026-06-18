@@ -22,15 +22,14 @@ import java.net.URI;
 @Path("/strava")
 public class StravaResource {
 
-        @ConfigProperty(name = "STRAVA_CLIENT_ID")
+        @ConfigProperty(name = "strava.client-id")
         String clientId;
 
-        @ConfigProperty(name = "STRAVA_REDIRECT_URI")
-        String redirectUri;
-
-        @ConfigProperty(name = "STRAVA_CLIENT_SECRET")
+        @ConfigProperty(name = "strava.client-secret")
         String clientSecret;
 
+        @ConfigProperty(name = "strava.redirect-uri")
+        String redirectUri;
         @Inject
         JwtService jwtService;
 

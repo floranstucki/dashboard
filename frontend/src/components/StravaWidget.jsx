@@ -6,6 +6,10 @@ function StravaWidget() {
     const [activities, setActivities] = useState([]);
     const [connected, setConnected] = useState(true);
 
+
+    const safeActivities = Array.isArray(activities) ? activities : [];
+    const safeConnected = Boolean(connected);
+
     useEffect(() => {
         const loadActivities = async () => {
             const response = await apiFetch("/strava/activities");
@@ -18,20 +22,20 @@ function StravaWidget() {
             if (!response.ok) return;
 
             const data = await response.json();
-            setActivities(data);
+            setActivities(Array.isArray(data) ? data : []);
         };
 
         loadActivities();
     }, []);
 
-    const latest = activities[0];
+    const latest = safeActivities[0];
 
     const weeklyStats = useMemo(() => {
         const now = new Date();
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(now.getDate() - 7);
 
-        const weekActivities = activities.filter(
+        const weekActivities = safeActivities.filter(
             (activity) => new Date(activity.start_date) >= sevenDaysAgo
         );
 
@@ -43,7 +47,7 @@ function StravaWidget() {
                 0
             ),
         };
-    }, [activities]);
+    }, [safeActivities]);
 
     const formatDistance = (meters) => `${(meters / 1000).toFixed(1)} km`;
 
@@ -54,7 +58,7 @@ function StravaWidget() {
         return h > 0 ? `${h}h${String(m).padStart(2, "0")}` : `${m} min`;
     };
 
-    if (!connected) {
+    if (!safeConnected) {
         return (
             <section className="dashboard-card strava-card">
                 <div className="card-header">

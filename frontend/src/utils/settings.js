@@ -37,6 +37,7 @@ export const DEFAULT_SETTINGS = {
         heatmap: true,
         dailyScore: true,
         dailyScoreHistory: true,
+        assistantDashboard: true,
     },
 };
 

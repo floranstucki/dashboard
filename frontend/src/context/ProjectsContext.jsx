@@ -22,7 +22,7 @@ export function ProjectsProvider({ children }) {
             }
 
             const data = await response.json();
-            setProjects(data);
+            setProjects(Array.isArray(data) ? data : []);
         } catch (error) {
             setProjectsError(error.message);
         } finally {

@@ -14,6 +14,7 @@ import {
     FileText,
     Flame,
     PlugZap,
+    Bot,
 } from "lucide-react";
 
 function Sidebar() {
@@ -26,6 +27,7 @@ function Sidebar() {
         { label: "Idées", icon: Lightbulb, path: "/ideas" },
         { label: "Notes", icon: BookOpen, path: "/notes" },
         { label: "Serveurs", icon: Server, path: "/servers" },
+        { label: "Assistant", icon: Bot, path: "/assistant" },
         { label: "Objectifs", icon: Target, path: "/goals" },
         { label: "Habitudes", icon: Flame, path: "/habits" },
         { label: "Journal", icon: BookOpen, path: "/journal" },

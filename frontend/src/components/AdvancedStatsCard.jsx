@@ -8,20 +8,24 @@ function AdvancedStatsCard() {
     const { goals } = useGoals();
     const { projects } = useProjects();
 
-    const completedTasks = tasks.filter((task) => task.status === "Terminé").length;
-    const completionRate = tasks.length
-        ? Math.round((completedTasks / tasks.length) * 100)
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeProjects = Array.isArray(projects) ? projects : [];
+
+    const completedTasks = safeTasks.filter((task) => task.status === "Terminé").length;
+    const completionRate = safeTasks.length
+        ? Math.round((completedTasks / safeTasks.length) * 100)
         : 0;
 
-    const recurrentTasks = tasks.filter(
+    const recurrentTasks = safeTasks.filter(
         (task) => task.recurrence && task.recurrence !== "Aucune"
     ).length;
 
-    const almostGoals = goals.filter(
+    const almostGoals = safeGoals.filter(
         (goal) => Number(goal.progress) >= 80 && Number(goal.progress) < 100
     ).length;
 
-    const weakProjects = projects.filter(
+    const weakProjects = safeProjects.filter(
         (project) => Number(project.progress) < 40
     ).length;
 
@@ -30,7 +34,7 @@ function AdvancedStatsCard() {
             icon: BarChart3,
             label: "Complétion tâches",
             value: `${completionRate}%`,
-            detail: `${completedTasks}/${tasks.length} terminées`,
+            detail: `${completedTasks}/${safeTasks.length} terminées`,
         },
         {
             icon: Repeat,

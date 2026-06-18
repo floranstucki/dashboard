@@ -24,13 +24,13 @@ import java.util.UUID;
 @Path("/github")
 public class GitHubResource {
 
-        @ConfigProperty(name = "GITHUB_CLIENT_ID")
+        @ConfigProperty(name = "github.client-id")
         String clientId;
 
-        @ConfigProperty(name = "GITHUB_CLIENT_SECRET")
+        @ConfigProperty(name = "github.client-secret")
         String clientSecret;
 
-        @ConfigProperty(name = "GITHUB_REDIRECT_URI")
+        @ConfigProperty(name = "github.redirect-uri")
         String redirectUri;
 
         @Inject

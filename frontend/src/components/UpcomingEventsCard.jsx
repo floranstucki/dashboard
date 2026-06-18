@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 function UpcomingEventsCard() {
     const { sortedEvents } = useCalendar();
 
-    const upcomingEvents = sortedEvents.slice(0, 3);
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+
+    const upcomingEvents = safeEvents.slice(0, 3);
 
     return (
         <section className="dashboard-card upcoming-events-card">

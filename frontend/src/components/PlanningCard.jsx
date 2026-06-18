@@ -4,6 +4,8 @@ import { useCalendar } from "../context/CalendarContext";
 function PlanningCard() {
     const { sortedEvents } = useCalendar();
 
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+
     const weekDays = useMemo(() => {
         const today = new Date();
 
@@ -21,10 +23,10 @@ function PlanningCard() {
                     day: "2-digit",
                 }),
                 fullDate: dateKey,
-                items: sortedEvents.filter((event) => event.date === dateKey),
+                items: safeEvents.filter((event) => event.date === dateKey),
             };
         });
-    }, [sortedEvents]);
+    }, [safeEvents]);
 
     return (
         <section className="dashboard-card planning-card">

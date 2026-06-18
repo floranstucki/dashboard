@@ -7,14 +7,23 @@ import { useCalendar } from "../context/CalendarContext";
 import { apiFetch } from "../utils/api";
 
 function PersonalAssistantCard() {
-    const { tasks = [] } = useTasks();
-    const { goals = [] } = useGoals();
-    const { habits = [] } = useHabits();
-    const { sortedEvents = [] } = useCalendar();
+    const { tasks } = useTasks();
+    const { goals } = useGoals();
+    const { habits } = useHabits();
+    const { sortedEvents } = useCalendar();
+
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeHabits = Array.isArray(habits) ? habits : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
 
     const [weather, setWeather] = useState(null);
     const [serverStatus, setServerStatus] = useState(null);
     const [activities, setActivities] = useState([]);
+
+    const safeWeather = Array.isArray(weather) ? weather : [];
+    const safeServerStatus = Array.isArray(serverStatus) ? serverStatus : [];
+    const safeActivities = Array.isArray(activities) ? activities : [];
 
     useEffect(() => {
         const loadExternalData = async () => {
@@ -45,7 +54,7 @@ function PersonalAssistantCard() {
 
         const today = new Date().toISOString().split("T")[0];
 
-        const urgentTasks = tasks.filter(
+        const urgentTasks = safeTasks.filter(
             (task) =>
                 task.status !== "Terminé" &&
                 (task.priority === "Haute" || task.priority === "Urgente")
@@ -57,7 +66,7 @@ function PersonalAssistantCard() {
                 text: `Tu as ${urgentTasks.length} tâche(s) importante(s) à traiter.`,
             });
         }
-        const lateTasks = tasks.filter(
+        const lateTasks = safeTasks.filter(
             (task) => {
                 if (!task.deadline || task.deadline === "Non terminé") return false;
 
@@ -71,7 +80,7 @@ function PersonalAssistantCard() {
             });
         }
 
-        const weakHabits = habits.filter((habit) => !habit.doneToday);
+        const weakHabits = safeHabits.filter((habit) => !habit.doneToday);
 
         if (weakHabits.length >= 3) {
             result.push({
@@ -85,7 +94,7 @@ function PersonalAssistantCard() {
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(now.getDate() - 7);
 
-        const weeklyKm = activities.filter((activity) => new Date(activity.start_date) >= sevenDaysAgo)
+        const weeklyKm = safeActivities.filter((activity) => new Date(activity.start_date) >= sevenDaysAgo)
             .reduce((sum, activity) => sum + Number(activity.distance || 0), 0) / 1000;
 
         if (weeklyKm < 15) {
@@ -95,7 +104,7 @@ function PersonalAssistantCard() {
             });
         }
 
-        const todayEvents = sortedEvents.filter((event) => event.date === today);
+        const todayEvents = safeEvents.filter((event) => event.date === today);
 
         if (todayEvents.length > 0) {
             result.push({
@@ -104,7 +113,7 @@ function PersonalAssistantCard() {
             });
         }
 
-        const undoneHabits = habits.filter((habit) => !habit.doneToday);
+        const undoneHabits = safeHabits.filter((habit) => !habit.doneToday);
 
         if (undoneHabits.length > 0) {
             result.push({
@@ -113,7 +122,7 @@ function PersonalAssistantCard() {
             });
         }
 
-        const almostGoals = goals.filter(
+        const almostGoals = safeGoals.filter(
             (goal) => Number(goal.progress) >= 80 && Number(goal.progress) < 100
         );
 
@@ -124,11 +133,11 @@ function PersonalAssistantCard() {
             });
         }
 
-        const rain = Number(weather?.current?.precipitation || 0);
-        const wind = Number(weather?.current?.wind_speed_10m || 0);
-        const temp = weather?.current?.temperature_2m;
+        const rain = Number(safeWeather?.current?.precipitation || 0);
+        const wind = Number(safeWeather?.current?.wind_speed_10m || 0);
+        const temp = safeWeather?.current?.temperature_2m;
 
-        if (weather) {
+        if (safeWeather) {
             if (rain < 1 && wind < 25) {
                 result.push({
                     title: "Météo sport",
@@ -142,16 +151,16 @@ function PersonalAssistantCard() {
             }
         }
 
-        if (serverStatus) {
-            if (!serverStatus.online) {
+        if (safeServerStatus?.online) {
+            if (!safeServerStatus.online) {
                 result.push({
                     title: "Serveur",
                     text: "Ton serveur maison semble hors ligne.",
                 });
-            } else if (Number(serverStatus.disk) >= 80) {
+            } else if (Number(safeServerStatus.disk) >= 80) {
                 result.push({
                     title: "Serveur",
-                    text: `Attention, disque utilisé à ${serverStatus.disk}%.`,
+                    text: `Attention, disque utilisé à ${safeServerStatus.disk}%.`,
                 });
             } else {
                 result.push({
@@ -161,8 +170,8 @@ function PersonalAssistantCard() {
             }
         }
 
-        if (activities.length > 0) {
-            const last = activities[0];
+        if (safeActivities.length > 0) {
+            const last = safeActivities[0];
             const daysSince = Math.floor(
                 (new Date() - new Date(last.start_date)) / 86400000
             );
@@ -183,7 +192,7 @@ function PersonalAssistantCard() {
         }
 
         return result.slice(0, 6);
-    }, [tasks, goals, habits, sortedEvents, weather, serverStatus, activities]);
+    }, [safeTasks, safeGoals, safeHabits, safeEvents, safeWeather, safeServerStatus, safeActivities]);
 
     return (
         <section className="dashboard-card personal-assistant-card">

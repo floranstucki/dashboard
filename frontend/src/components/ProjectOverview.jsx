@@ -11,6 +11,7 @@ import { useProjects } from "../context/ProjectsContext";
 function ProjectsOverview() {
     const { projects } = useProjects();
 
+    const safeProjects = Array.isArray(projects) ? projects : [];
     const getIcon = (projectName) => {
         const cleanName = projectName.toLowerCase();
 
@@ -33,7 +34,7 @@ function ProjectsOverview() {
             </div>
 
             <div className="projects-grid">
-                {projects.slice(0, 5).map((project) => {
+                {safeProjects.slice(0, 5).map((project) => {
                     const Icon = getIcon(project.name);
 
                     return (

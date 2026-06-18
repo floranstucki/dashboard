@@ -22,7 +22,7 @@ export function FinancesProvider({ children }) {
             }
 
             const data = await response.json();
-            setItems(data);
+            setItems(Array.isArray(data) ? data : []);
         } catch (error) {
             setFinancesError(error.message);
         } finally {

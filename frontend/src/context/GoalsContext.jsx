@@ -22,7 +22,7 @@ export function GoalsProvider({ children }) {
             }
 
             const data = await response.json();
-            setGoals(data);
+            setGoals(Array.isArray(data) ? data : []);
         } catch (error) {
             setGoalsError(error.message);
         } finally {

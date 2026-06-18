@@ -8,18 +8,22 @@ function PriorityCard() {
     const { goals } = useGoals();
     const { sortedEvents } = useCalendar();
 
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+
     const today = new Date().toISOString().split("T")[0];
 
-    const urgentTasks = tasks
+    const urgentTasks = safeTasks
         .filter((task) => task.status !== "Terminé")
         .filter((task) => task.priority === "Urgente" || task.priority === "Haute")
         .slice(0, 3);
 
-    const todayEvents = sortedEvents
+    const todayEvents = safeEvents
         .filter((event) => event.date === today)
         .slice(0, 2);
 
-    const slowGoals = goals
+    const slowGoals = safeGoals
         .filter((goal) => Number(goal.progress) < 50)
         .slice(0, 2);
 

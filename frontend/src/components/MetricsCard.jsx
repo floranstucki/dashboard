@@ -18,36 +18,43 @@ function MetricsCard() {
     const { goals } = useGoals();
     const { items, totals, soldeNet, formatCHF } = useFinances();
     const { sortedEvents } = useCalendar();
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeProjects = Array.isArray(projects) ? projects : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+    const safeItems = Array.isArray(items) ? items : [];
 
-    const openTasks = tasks.filter((task) => task.status !== "Terminé").length;
 
-    const completedTasks = tasks.filter(
+
+    const openTasks = safeTasks.filter((task) => task.status !== "Terminé").length;
+
+    const completedTasks = safeTasks.filter(
         (task) => task.status === "Terminé"
     ).length;
 
-    const activeProjects = projects.filter(
+    const activeProjects = safeProjects.filter(
         (project) => project.status !== "Terminé"
     ).length;
 
-    const averageProjectProgress = projects.length
+    const averageProjectProgress = safeProjects.length
         ? Math.round(
-            projects.reduce(
+            safeProjects.reduce(
                 (sum, project) => sum + Number(project.progress),
                 0
-            ) / projects.length
+            ) / safeProjects.length
         )
         : 0;
 
-    const averageGoalProgress = goals.length
+    const averageGoalProgress = safeGoals.length
         ? Math.round(
-            goals.reduce((sum, goal) => sum + Number(goal.progress), 0) /
-            goals.length
+            safeGoals.reduce((sum, goal) => sum + Number(goal.progress), 0) /
+            safeGoals.length
         )
         : 0;
 
     const today = new Date().toISOString().split("T")[0];
 
-    const todayEvents = sortedEvents.filter(
+    const todayEvents = safeEvents.filter(
         (event) => event.date === today
     ).length;
 
@@ -67,7 +74,7 @@ function MetricsCard() {
         {
             icon: Target,
             label: "Objectifs",
-            value: goals.length,
+            value: safeGoals.length,
             detail: `${averageGoalProgress}% progression moyenne`,
         },
         {
@@ -80,7 +87,7 @@ function MetricsCard() {
             icon: PiggyBank,
             label: "Épargne",
             value: formatCHF(totals.epargne),
-            detail: `${items.length} ligne(s) financière(s)`,
+            detail: `${safeItems.length} ligne(s) financière(s)`,
         },
         {
             icon: Wallet,

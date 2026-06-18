@@ -4,17 +4,30 @@ import { useHabits } from "../context/HabitsContext";
 import { apiFetch } from "../utils/api";
 
 function ActivityHeatmap() {
-    const { tasks = [] } = useTasks();
-    const { habits = [] } = useHabits();
+    const { tasks } = useTasks();
+    const { habits } = useHabits();
     const [activities, setActivities] = useState([]);
+
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeHabits = Array.isArray(habits) ? habits : [];
+    const safeActivities = Array.isArray(activities) ? activities : [];
 
     useEffect(() => {
         const loadActivities = async () => {
-            const response = await apiFetch("/strava/activities");
-            if (!response.ok) return;
+            try {
+                const response = await apiFetch("/strava/activities");
 
-            const data = await response.json();
-            setActivities(data);
+                if (!response.ok) {
+                    setActivities([]);
+                    return;
+                }
+
+                const data = await response.json();
+                setActivities(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error("Erreur heatmap Strava :", error);
+                setActivities([]);
+            }
         };
 
         loadActivities();
@@ -22,6 +35,7 @@ function ActivityHeatmap() {
 
     const heatmapData = useMemo(() => {
         const data = [];
+        const todayString = new Date().toISOString().split("T")[0];
 
         for (let i = 41; i >= 0; i--) {
             const date = new Date();
@@ -29,32 +43,31 @@ function ActivityHeatmap() {
 
             const dateString = date.toISOString().split("T")[0];
 
-            const completedTasks = tasks.filter(
+            const completedTasks = safeTasks.filter(
                 (task) =>
                     task.status === "Terminé" &&
                     task.updatedAt?.startsWith(dateString)
             ).length;
 
-            const completedHabits = habits.filter(
+            const completedHabits = safeHabits.filter(
                 (habit) =>
                     habit.lastDoneDate === dateString ||
-                    (habit.doneToday && dateString === new Date().toISOString().split("T")[0])
+                    (habit.doneToday && dateString === todayString)
             ).length;
 
-            const stravaPoints = activities.filter((activity) =>
-                activity.start_date?.startsWith(dateString)
-            ).length * 3;
-
-            const count = completedTasks + completedHabits + stravaPoints;
+            const stravaPoints =
+                safeActivities.filter((activity) =>
+                    activity.start_date?.startsWith(dateString)
+                ).length * 3;
 
             data.push({
                 date: dateString,
-                count,
+                count: completedTasks + completedHabits + stravaPoints,
             });
         }
 
         return data;
-    }, [tasks, habits, activities]);
+    }, [safeTasks, safeHabits, safeActivities]);
 
     const getClass = (count) => {
         if (count === 0) return "heatmap-0";

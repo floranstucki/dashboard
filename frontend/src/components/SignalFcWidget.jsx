@@ -6,6 +6,9 @@ function SignalFcWidget() {
     const [posts, setPosts] = useState([]);
     const [manifestations, setManifestations] = useState([]);
 
+    const safePosts = Array.isArray(posts) ? posts : [];
+    const safeManifestations = Array.isArray(manifestations) ? manifestations : [];
+
     useEffect(() => {
         const loadSignalData = async () => {
             const [postsRes, manifestationsRes] = await Promise.allSettled([
@@ -38,8 +41,8 @@ function SignalFcWidget() {
                 <h3>📰 Actualités</h3>
 
                 <div className="signal-list">
-                    {posts.length > 0 ? (
-                        posts.slice(0, 3).map((post) => (
+                    {safePosts.length > 0 ? (
+                        safePosts.slice(0, 3).map((post) => (
                             <a
                                 className="signal-item"
                                 href={post.link}
@@ -73,8 +76,8 @@ function SignalFcWidget() {
                 <h3>📅 Manifestations</h3>
 
                 <div className="signal-list">
-                    {manifestations.length > 0 ? (
-                        manifestations.slice(0, 3).map((event) => (
+                    {safeManifestations.length > 0 ? (
+                        safeManifestations.slice(0, 3).map((event) => (
                             <a
                                 className="signal-item"
                                 href={event.link}

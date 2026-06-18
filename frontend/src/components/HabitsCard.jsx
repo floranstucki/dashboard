@@ -3,14 +3,15 @@ import { useHabits } from "../context/HabitsContext";
 
 function HabitsCard() {
     const { habits, toggleHabitToday } = useHabits();
-    const completedToday = habits.filter((habit) => habit.doneToday).length;
+    const safeHabits = Array.isArray(habits) ? habits : [];
+    const completedToday = safeHabits.filter((habit) => habit.doneToday).length;
 
-    const bestStreak = habits.length
-        ? Math.max(...habits.map((habit) => Number(habit.bestStreak || habit.streak || 0)))
+    const bestStreak = safeHabits.length
+        ? Math.max(...safeHabits.map((habit) => Number(habit.bestStreak || habit.streak || 0)))
         : 0;
 
-    const completionRate = habits.length
-        ? Math.round((completedToday / habits.length) * 100)
+    const completionRate = safeHabits.length
+        ? Math.round((completedToday / safeHabits.length) * 100)
         : 0;
     return (
         <section className="dashboard-card habits-card">
@@ -20,7 +21,7 @@ function HabitsCard() {
             <div className="habits-summary">
                 <div>
                     <span>Aujourd’hui</span>
-                    <strong>{completedToday}/{habits.length}</strong>
+                    <strong>{completedToday}/{safeHabits.length}</strong>
                 </div>
 
                 <div>
@@ -34,7 +35,7 @@ function HabitsCard() {
                 </div>
             </div>
             <div className="habits-list">
-                {habits.map((habit) => (
+                {safeHabits.map((habit) => (
                     <article
                         className={`habit-item ${habit.doneToday ? "habit-done" : ""}`}
                         key={habit.id}

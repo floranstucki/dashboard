@@ -44,6 +44,7 @@ const DASHBOARD_WIDGETS = [
     { key: "heatmap", label: "Heatmap activité" },
     { key: "dailyScore", label: "Score du jour" },
     { key: "dailyScoreHistory", label: "Historique du score" },
+    { key: "assistantDashboard", label: "Assistant dashboard" },
 ];
 function Settings() {
 

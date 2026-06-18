@@ -10,9 +10,14 @@ function AssistantCard() {
     const { sortedEvents } = useCalendar();
     const { goals } = useGoals();
 
+    const safeTasks = Array.isArray(tasks) ? tasks : [];
+    const safeProjects = Array.isArray(projects) ? projects : [];
+    const safeGoals = Array.isArray(goals) ? goals : [];
+    const safeEvents = Array.isArray(sortedEvents) ? sortedEvents : [];
+
     const today = new Date().toISOString().split("T")[0];
 
-    const activeTasks = tasks.filter((task) => task.status !== "Terminé");
+    const activeTasks = safeTasks.filter((task) => task.status !== "Terminé");
 
     const overdueTasks = activeTasks.filter(
         (task) => task.deadline !== "Non définie" && task.deadline < today
@@ -22,13 +27,13 @@ function AssistantCard() {
         (task) => task.priority === "Urgente" || task.priority === "Haute"
     );
 
-    const todayEvents = sortedEvents.filter((event) => event.date === today);
+    const todayEvents = safeEvents.filter((event) => event.date === today);
 
-    const weakestProject = [...projects].sort(
+    const weakestProject = [...safeProjects].sort(
         (a, b) => Number(a.progress) - Number(b.progress)
     )[0];
 
-    const weakestGoal = [...goals].sort(
+    const weakestGoal = [...safeGoals].sort(
         (a, b) => Number(a.progress) - Number(b.progress)
     )[0];
 

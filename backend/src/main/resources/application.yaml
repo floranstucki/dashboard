@@ -8,16 +8,30 @@ quarkus:
       headers: accept,authorization,content-type,x-requested-with
   datasource:
     db-kind: mysql
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:rootfinsight}
     jdbc:
-      url: ${DB_URL}
+      url: ${DB_URL:jdbc:mysql://localhost:3306/home_dashboard?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC}
 
   hibernate-orm:
     database:
       generation: update
     log:
       sql: true
+
+strava:
+  client-id: ${STRAVA_CLIENT_ID:dev}
+  client-secret: ${STRAVA_CLIENT_SECRET:dev}
+  redirect-uri: ${STRAVA_REDIRECT_URI:http://localhost:7777/strava/callback}
+
+github:
+  client-id: ${GITHUB_CLIENT_ID:dev}
+  client-secret: ${GITHUB_CLIENT_SECRET:dev}
+  redirect-uri: ${GITHUB_REDIRECT_URI:http://localhost:7777/github/callback}
+
+ollama:
+  url: ${OLLAMA_URL:http://localhost:11434}
+  model: ${OLLAMA_MODEL:llama3.1:8b}
 
 smallrye:
   jwt:

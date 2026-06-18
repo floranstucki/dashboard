@@ -21,7 +21,7 @@ export function NotificationsProvider({ children }) {
             }
 
             const data = await response.json();
-            setNotifications(data);
+            setNotifications(Array.isArray(data) ? data : []);
         } catch (error) {
             setNotificationsError(error.message);
         } finally {

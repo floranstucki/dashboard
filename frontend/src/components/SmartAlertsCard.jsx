@@ -16,6 +16,11 @@ function SmartAlertsCard() {
     const [serverStatus, setServerStatus] = useState(null);
     const [weather, setWeather] = useState(null);
 
+
+    const safeActivities = Array.isArray(activities) ? activities : [];
+    const safeServerStatus = serverStatus || {};
+    const safeWeather = weather || {};
+
     useEffect(() => {
         const loadData = async () => {
             const [stravaResponse, serverResponse, weatherResponse] =
@@ -58,7 +63,7 @@ function SmartAlertsCard() {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(now.getDate() - 7);
 
-        const weekActivities = activities.filter(
+        const weekActivities = safeActivities.filter(
             (activity) => new Date(activity.start_date) >= sevenDaysAgo
         );
 
@@ -68,7 +73,7 @@ function SmartAlertsCard() {
                 0
             ) / 1000;
 
-        const latestActivity = activities[0];
+        const latestActivity = safeActivities[0];
 
         if (latestActivity) {
             const daysSinceLastActivity = Math.floor(
@@ -96,8 +101,8 @@ function SmartAlertsCard() {
             });
         }
 
-        if (serverStatus) {
-            if (!serverStatus.online) {
+        if (safeServerStatus) {
+            if (!safeServerStatus.online) {
                 items.push({
                     type: "danger",
                     icon: ServerCrash,
@@ -106,17 +111,17 @@ function SmartAlertsCard() {
                 });
             }
 
-            if (Number(serverStatus.disk) >= 80) {
+            if (Number(safeServerStatus.disk) >= 80) {
                 items.push({
                     type: "warning",
                     icon: HardDrive,
                     title: "Disque serveur presque plein",
-                    message: `Le disque est utilisé à ${serverStatus.disk}%.`,
+                    message: `Le disque est utilisé à ${safeServerStatus.disk}%.`,
                 });
             }
 
-            if (serverStatus.services) {
-                const failedServices = Object.entries(serverStatus.services)
+            if (safeServerStatus.services) {
+                const failedServices = Object.entries(safeServerStatus.services)
                     .filter(([, ok]) => !ok)
                     .map(([name]) => name.toUpperCase());
 
@@ -131,8 +136,8 @@ function SmartAlertsCard() {
             }
         }
 
-        const rain = Number(weather?.current?.precipitation || 0);
-        const wind = Number(weather?.current?.wind_speed_10m || 0);
+        const rain = Number(safeWeather?.current?.precipitation || 0);
+        const wind = Number(safeWeather?.current?.wind_speed_10m || 0);
 
         if (rain >= 5) {
             items.push({
@@ -153,7 +158,7 @@ function SmartAlertsCard() {
         }
 
         return items;
-    }, [activities, serverStatus, weather]);
+    }, [safeActivities, safeServerStatus, safeWeather]);
 
     return (
         <section className="dashboard-card smart-alerts-card">
